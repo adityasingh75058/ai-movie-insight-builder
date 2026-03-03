@@ -1,66 +1,84 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+import { useState } from "react";
+import axios from "axios";
 
 export default function Home() {
+  const [imdbID, setImdbID] = useState("");
+  const [movie, setMovie] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const fetchMovie = async () => {
+    if (!imdbID.startsWith("tt")) {
+      setError("IMDb ID must start with 'tt' (Example: tt0133093)");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError("");
+      const res = await axios.get(`/api/movie?imdbID=${imdbID}`);
+      setMovie(res.data);
+    } catch (err) {
+      setError("Movie not found or server error.");
+      setMovie(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="container">
+      <h1>🎬 AI Movie Insight Builder</h1>
+
+      <div className="input-group">
+        <input
+          type="text"
+          placeholder="Enter IMDb ID (e.g. tt0133093)"
+          value={imdbID}
+          onChange={(e) => setImdbID(e.target.value)}
         />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.js file.</h1>
+        <button onClick={fetchMovie}>Analyze</button>
+      </div>
+
+      {error && <p className="error">{error}</p>}
+
+      {loading && (
+        <div className="loader-container">
+          <div className="spinner"></div>
+          <p>Analyzing movie...</p>
+        </div>
+      )}
+
+      {movie && (
+        <div className="movie-card">
+          <img src={movie.poster} alt="poster" />
+
+          <h2>{movie.title}</h2>
+          <p><b>Year:</b> {movie.year}</p>
+          <p><b>Rating:</b> {movie.rating}</p>
+          <p><b>Cast:</b> {movie.cast}</p>
+          <p><b>Plot:</b> {movie.plot}</p>
+
+          <h3>AI Audience Summary</h3>
+          <p>{movie.aiSummary}</p>
+
           <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
+            <b>Sentiment:</b>{" "}
+            <span
+              className={
+                movie.sentiment === "Positive"
+                  ? "badge positive"
+                  : movie.sentiment === "Negative"
+                  ? "badge negative"
+                  : "badge mixed"
+              }
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
+              {movie.sentiment}
+            </span>
           </p>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      )}
     </div>
   );
 }

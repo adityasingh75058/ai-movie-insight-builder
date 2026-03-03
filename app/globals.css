@@ -1,42 +1,113 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  color: white;
+  text-align: center;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+.container {
+  padding: 40px 20px;
+}
+
+.input-group {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+input {
+  padding: 10px;
+  width: 260px;
+  border-radius: 8px;
+  border: none;
+}
+
+button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  background: #4caf50;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+.error {
+  color: #ff4d4d;
+  margin-top: 10px;
+}
+
+.loader-container {
+  margin-top: 20px;
+}
+
+.spinner {
+  margin: 10px auto;
+  width: 40px;
+  height: 40px;
+  border: 5px solid #ccc;
+  border-top: 5px solid #4caf50;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
   }
 }
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
+.movie-card {
+  margin: 30px auto;
+  padding: 25px;
+  max-width: 500px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  transition: transform 0.3s ease;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+.movie-card:hover {
+  transform: scale(1.02);
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+.movie-card img {
+  width: 100%;
+  border-radius: 10px;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+.badge {
+  padding: 5px 10px;
+  border-radius: 8px;
+  color: white;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+.positive {
+  background-color: #2ecc71;
+}
+
+.mixed {
+  background-color: orange;
+}
+
+.negative {
+  background-color: #e74c3c;
+}
+
+
+@media (max-width: 600px) {
+  input {
+    width: 100%;
+  }
+
+  .movie-card {
+    padding: 15px;
   }
 }
